@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노년층 주관적 건강인지율 자가진단</title>
+    <style>
+        /* 어르신들을 위해 전체적으로 글씨를 크게 키우고 눈이 편한 초록색 계열 그라데이션 적용 */
+        body {
+            font-family: 'Malgun Gothic', dotum, sans-serif;
+            background: linear-gradient(135deg, #eaf2eb 0%, #dcece0 100%);
+            margin: 0;
+            padding: 30px 15px;
+            color: #2c3e50;
+            font-size: 19px;
+            line-height: 1.7;
+        }
+        .box {
+            max-width: 750px;
+            margin: auto;
+            background: #fff;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.1);
+        }
+        h1 {
+            color: #27ae60;
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        h2 {
+            color: #2e7d32;
+            font-size: 24px;
+            border-bottom: 3px solid #81c784;
+            padding-bottom: 8px;
+            margin-top: 40px;
+        }
+        .info-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .info-item {
+            flex: 1;
+            min-width: 250px;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid #a5d6a7;
+            border-radius: 8px;
+            background: #fff;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        /* 질문 카드를 큼직하고 깔끔하게 변경 */
+        .q {
+            margin: 25px 0;
+            padding: 22px;
+            border: 2px solid #e8f5e9;
+            border-radius: 12px;
+            background-color: #f9fbf9;
+            transition: all 0.2s;
+        }
+        .q b {
+            font-size: 21px;
+            color: #1b5e20;
+            display: block;
+            margin-bottom: 15px;
+        }
+        /* 선택지 버튼을 가로로 정렬하고 터치하기 쉽게 대형화 */
+        .options-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .options-wrapper label {
+            display: inline-flex;
+            align-items: center;
+            background: #fff;
+            border: 2px solid #c8e6c9;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .options-wrapper label:hover {
+            background-color: #e8f5e9;
+            border-color: #81c784;
+        }
+        .options-wrapper input[type="radio"] {
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        /* 진단하기 대형 버튼 */
+        button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            font-size: 24px;
+            font-weight: bold;
+            background: #2e7d32;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+            margin-top: 40px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #1b5e20;
+        }
+        /* 결과 리디자인 */
+        .result {
+            display: none;
+            margin-top: 35px;
+            background: #f1f8e9;
+            padding: 30px;
+            border-radius: 16px;
+            border: 3px solid #2e7d32;
+        }
+        .result h2 {
+            margin-top: 0;
+            color: #2e7d32;
+            border: none;
+            font-size: 28px;
+        }
+        .score-badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            font-size: 16px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .bg-green { background-color: #2e7d32; }
+        .bg-orange { background-color: #ef6c00; }
+        .bg-red { background-color: #c62828; }
+        
+        .advice-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 18px;
+            line-height: 1.8;
+            border-left: 5px solid #1565c0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .footer-info {
+            margin-top: 25px;
+            font-size: 15px;
+            color: #555;
+            border-top: 2px dashed #c8e6c9;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h1>👴👵 노년층 건강상태 자가진단</h1>
+    
+    <h2>■ 기본 정보 입력</h2>
+    <div class="info-group">
+        <div class="info-item">
+            <select id="genderSelect">
+                <option value="">성별을 선택해 주세요 (필수)</option>
+                <option>남성</option>
+                <option>여성</option>
+            </select>
+        </div>
+        <div class="info-item">
+            <select id="ageSelect">
+                <option value="">연령대를 선택해 주세요 (필수)</option>
+                <option>만 50세 ~ 59세</option>
+                <option>만 60세 ~ 64세</option>
+                <option>만 65세 ~ 74세</option>
+                <option>만 75세 ~ 84세</option>
+                <option>만 85세 이상</option>
+            </select>
+        </div>
+    </div>
+
+    <h2>■ 건강상태 자가진단 문항</h2>
+    <div id="health"></div>
+
+    <button onclick="calc()">진단 결과 확인하기</button>
+
+    <div id="r" class="result"></div>
+</div>
+
+<script>
+// 만성질환 관리를 위한 시니어 전용 문항 (8문항)
+const healthQ = [
+    ["현재 어르신의 전반적인 몸 건강 상태는 어떻다고 생각하십니까?", ["매우 좋음", "좋음", "보통", "나쁨", "매우 나쁨"]],
+    ["혈압약, 당뇨약 등 만성질환 약을 거르지 않고 잘 복용하고 계십니까?", ["매우 잘 복용함", "대체로 잘 복용함", "보통이다", "자주 거른다", "복용약 없음 / 부실함"]],
+    ["최근 6개월간 계단을 오르내리거나 걸을 때 무릎/허리 통증으로 불편하셨습니까?", ["전혀 없다", "거의 없다", "가끔 있다", "자주 있다", "항상 통증이 심하다"]],
+    ["최근 1년간 길을 걷다 중심을 잃거나 미끄러져 넘어질 뻔한(또는 넘어진) 적이 있습니까?", ["전혀 없다", "1회 있다", "2~3회 있다", "자주 있다"]],
+    ["자신의 기억력이나 집중력이 예전에 비해 많이 떨어졌다고 느끼십니까?", ["전혀 아니다", "거의 아니다", "조금 느낀다", "자주 깜빡한다", "매우 심각하다"]],
+    ["근력 유지를 위해 걷기나 가벼운 운동을 주 몇 회 이상 하십니까?", ["주 5회 이상", "주 3~4회", "주 1~2회", "거의 하지 않는다"]],
+    ["식사를 하실 때 고기, 생선, 두부 등 단백질을 포함하여 골고루 드십니까?", ["매우 그렇다", "그렇다", "보통이다", "그렇지 않다", "전혀 그렇지 않다"]],
+    ["밤에 잠을 깊이 주무시고 아침에 일어났을 때 개운하십니까?", ["항상 그렇다", "대체로 그렇다", "보통이다", "거의 아니다", "전혀 아니다"]]
+];
+
+const h = document.getElementById('health');
+
+// 어르신들이 누르기 편한 가로 배치 카드형 레이아웃 생성
+healthQ.forEach((q, i) => {
+    let d = `<div class="q"><b>${i + 1}. ${q[0]}</b><div class="options-wrapper">`;
+    q[1].forEach((o, j) => {
+        d += `<label><input type="radio" name="h${i}" value="${q[1].length - j}"> ${o}</label>`;
+    });
+    d += '</div></div>';
+    h.innerHTML += d;
+});
+
+function calc() {
+    // 1. 필수 기본정보 입력 검사
+    if(document.getElementById('genderSelect').value === "" || document.getElementById('ageSelect').value === "") {
+        alert("성별과 연령대를 먼저 선택해 주세요!");
+        return;
+    }
+
+    let hs = 0, max = 0;
+    let unansweredQuestions = [];
+    
+    // 2. 빠진 문항이 있는지 정밀 검사
+    healthQ.forEach((q, i) => {
+        max += q[1].length;
+        let e = document.querySelector(`input[name=h${i}]:checked`);
+        if (e) {
+            hs += +e.value;
+        } else {
+            unansweredQuestions.push(i + 1); // 안 푼 문항 번호 기록
+        }
+    });
+
+    if(unansweredQuestions.length > 0) {
+        alert(`아직 답변하지 않은 문항이 있습니다!\n[ ${unansweredQuestions.join(', ')}번 ] 질문에 답해주세요.`);
+        return;
+    }
+
+    // 3. 점수 계산 및 시니어 기준 등급화
+    let pct = Math.round((hs / max) * 100);
+    let hg = pct >= 85 ? "매우 양호" : pct >= 70 ? "양호" : pct >= 55 ? "보통" : pct >= 40 ? "주의 요망" : "적극적인 관리 필요";
+    let hColor = pct >= 70 ? "bg-green" : pct >= 40 ? "bg-orange" : "bg-red";
+
+    // 4. 점수대별 맞춤형 실천 예방 가이드 구성
+    let advice = "";
+    if (pct < 55) {
+        advice = "<b>⚠️ 현재 신체 신호에 주의가 필요합니다.</b><br>근력 저하와 낙상 위험을 막기 위해 하루 30분 평지 걷기와 의자를 잡고 안전하게 앉았다 일어나기 운동을 매일 실천해 보세요. 또한 식사 시 두부, 달걀, 생선 등 단백질을 꼭 챙겨 드시고 보건소 만성질환 관리 상담을 받아보시는 것을 적극 권장합니다.";
+    } else if (pct < 75) {
+        advice = "<b>💡 대체로 보통 수준이나 관리가 시작되어야 하는 시기입니다.</b><br>뼈와 관절 건강을 위해 무리한 계단 오르내리기는 피하시고, 하루 20분 가량 햇볕을 쬐며 가볍게 산책해 비타민D를 합성을 도와주세요. 만성질환 약을 드신다면 시간을 맞춰 규칙적으로 복용하는 습관이 무엇보다 중요합니다.";
+    } else {
+        advice = "<b>✨ 주관적 건강 인지 상태가 아주 훌륭하십니다!</b><br>지금의 건강한 식습관과 규칙적인 운동 요법을 꾸준히 유지해 주세요. 매일 충분한 수분(물)을 섭취해 주시고, 매년 시행되는 정기 국가건강검진도 거르지 말고 꼭 받으시기 바랍니다.";
+    }
+
+    // 5. 화면 출력
+    const rBox = document.getElementById('r');
+    rBox.style.display = 'block';
+    rBox.innerHTML = `
+        <h2>📋 종합 자가진단 결과 안내</h2>
+        <p><b>어르신의 건강인지율:</b> <span style="font-size: 24px; color:#2e7d32; font-weight:bold;">${pct}%</span> <span class="score-badge ${hColor}">${hg}</span></p>
+        
+        <div class="advice-box">
+            <h3 style="margin-top:0; color:#1565c0; font-size:22px;">💡 시니어 맞춤형 건강 예방 가이드</h3>
+            <p>${advice}</p>
+        </div>
+
+        <div class="footer-info">
+            <p>※ 본 결과는 간이 설문이므로 정확한 의학적 진단은 반드시 의사와 상의하십시오.</p>
+            <b>[정부 지원 및 건강 도움 시설 안내]</b><br>
+            - 거주지 보건소 치매안심센터 (치매 선별 및 기억력 무료 검사 가능)<br>
+            - 국민건강보험공단 (만성질환 가이드 및 검진 안내): https://www.nhis.or.kr
+        </div>
+    `;
+
+    // 결과 창으로 부드럽고 편안하게 화면 자동 이동
+    window.scrollTo({ top: rBox.offsetTop - 20, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
